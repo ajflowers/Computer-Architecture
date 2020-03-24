@@ -12,8 +12,7 @@
 - [X] Implement the `CPU` constructor
 - [X] Add RAM functions `ram_read()` and `ram_write()`
 - [X] Implement the core of `run()`
-- [ ] Add the `LDI` instruction
-- [ ] Add the `PRN` instruction
+- [X] Add the `PRN` instruction
 
 ### Day 2: Add the ability to load files dynamically, get `mult.ls8` running
 

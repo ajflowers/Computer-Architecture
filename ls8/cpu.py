@@ -8,7 +8,7 @@ class CPU:
     def __init__(self):
         """Construct a new CPU."""
         self.ram = [0] * 256
-        self.register = [0] * 8
+        self.reg = [0] * 8
         self.pc = 0
         self.ir = 0
         self.fl = 0
@@ -76,7 +76,7 @@ class CPU:
 
     def run(self):
         """Run the CPU."""
-        self.load
+        self.load()
 
         running = True
         self.pc = 0
@@ -85,10 +85,24 @@ class CPU:
 
             self.ir = self.ram_read(self.pc)
 
-            if self.ir == 0b00000000 #HLT:
+            if self.ir == 0b00000001:       #HLT
                 running = False
 
+            elif self.ir == 0b10000010:     #LDI
+                """
+                LDI register immediate
+                Set the value of a register to an integer.
+                """
+                self.reg[self.ram_read(self.pc + 1)] = self.ram_read(self.pc + 2)
+                self.pc += 3
+
+            elif self.ir == 0b01000111:     #PRN
+                print(self.reg[self.ram_read(self.pc + 1)])
+                self.pc += 2
         
+cpu = CPU()        
+
+cpu.run()
         
         
         
