@@ -86,6 +86,7 @@ class CPU:
             self.ir = self.ram_read(self.pc)
 
             if self.ir == 0b00000001:       #HLT
+                """Halt the CPU (and exit the emulator)."""
                 running = False
 
             elif self.ir == 0b10000010:     #LDI
@@ -97,8 +98,17 @@ class CPU:
                 self.pc += 3
 
             elif self.ir == 0b01000111:     #PRN
+                """
+                PRN register` pseudo-instruction
+                Print numeric value stored in the given register.
+                """
                 print(self.reg[self.ram_read(self.pc + 1)])
                 self.pc += 2
+
+            else:
+                # this should not activate unless PC has landed on invalid instruction
+                self.trace()
+                running = False
         
 cpu = CPU()        
 
