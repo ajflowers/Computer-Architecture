@@ -2,6 +2,8 @@
 
 import sys
 
+from instructions import *
+
 class CPU:
     """Main CPU class."""
 
@@ -110,16 +112,24 @@ class CPU:
         running = True
         self.pc = 0
 
-        HLT = 0b00000001
-        LDI = 0b10000010
-        PRN = 0b01000111
-        MUL = 0b10100010
-
+    
         while running:
 
             self.ir = self.ram_read(self.pc)
 
-            if self.ir == HLT:
+            if alt_instructions.get(self.ir) is not None:
+                self.alu(
+                    alt_instructions[self.ir],
+                    self.ram_read(self.pc + 1),
+                    self.ram_read(self.pc + 2)
+                )
+
+                if self.ir == INC or self.ir == DEC:
+                    self.pc += 2
+                else:
+                    self.pc += 3
+
+            elif self.ir == HLT:
                 """Halt the CPU (and exit the emulator)."""
                 running = False
 
@@ -138,10 +148,6 @@ class CPU:
                 """
                 print(self.reg[self.ram_read(self.pc + 1)])
                 self.pc += 2
-
-            elif self.ir == MUL:
-                self.alu('MUL', self.ram_read(self.pc + 1), self.ram_read(self.pc + 2))
-                self.pc += 3
 
             else:
                 # this should not activate unless PC has landed on invalid instruction
