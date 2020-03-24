@@ -13,8 +13,15 @@ class CPU:
         self.ir = 0
         self.fl = 0
 
-    def load(self, filename):
+    def load(self):
         """Load a program into memory."""
+
+        if len(sys.argv) != 2:
+            print("usage: simple.py filename")
+            sys.exit(1)
+
+        filename = sys.argv[1]
+
         address = 0
 
         try:
@@ -98,14 +105,7 @@ class CPU:
 
     def run(self):
         """Run the CPU."""
-        if len(sys.argv) != 2:
-            print("usage: simple.py filename")
-            sys.exit(1)
-
-        filename = sys.argv[1]
-
-        self.load(filename)
-
+        
         running = True
         self.pc = 0
 
@@ -137,9 +137,3 @@ class CPU:
                 # this should not activate unless PC has landed on invalid instruction
                 self.trace()
                 running = False
-
-cpu = CPU()
-
-cpu.run()
-
-
