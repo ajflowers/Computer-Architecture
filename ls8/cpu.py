@@ -13,27 +13,49 @@ class CPU:
         self.ir = 0
         self.fl = 0
 
-
-    def load(self):
+    def load(self, filename):
         """Load a program into memory."""
-
         address = 0
 
-        # For now, we've just hardcoded a program:
+        try:
+            with open(filename) as f:
+                for line in f:
 
-        program = [
-            # From print8.ls8
-            0b10000010, # LDI R0,8
-            0b00000000,
-            0b00001000,
-            0b01000111, # PRN R0
-            0b00000000,
-            0b00000001, # HLT
-        ]
+                    # Ignore comments
+                    comment_split = line.split("#")
 
-        for instruction in program:
-            self.ram[address] = instruction
-            address += 1
+                    # Strip out whitespace
+                    num = comment_split[0].strip()
+
+                    # Ignore blank lines
+                    if num == '':
+                        continue
+
+                    val = int(num,2)
+                    self.ram[address] = val
+                    # print(num, val)
+                    address += 1
+
+        except FileNotFoundError:
+            print("File not found")
+            sys.exit(2)
+
+
+        # # For now, we've just hardcoded a program:
+
+        # program = [
+        #     # From print8.ls8
+        #     0b10000010, # LDI R0,8
+        #     0b00000000,
+        #     0b00001000,
+        #     0b01000111, # PRN R0
+        #     0b00000000,
+        #     0b00000001, # HLT
+        # # ]
+
+        # for instruction in program:
+        #     self.ram[address] = instruction
+        #     address += 1
 
 
     def alu(self, op, reg_a, reg_b):
@@ -66,7 +88,7 @@ class CPU:
         print()
 
     def ram_read(self, address):
-        """read the value from the given address"""    
+        """read the value from the given address"""
         return self.ram[address]
 
     def ram_write(self, address, value):
@@ -76,7 +98,13 @@ class CPU:
 
     def run(self):
         """Run the CPU."""
-        self.load()
+        if len(sys.argv) != 2:
+            print("usage: simple.py filename")
+            sys.exit(1)
+
+        filename = sys.argv[1]
+
+        self.load(filename)
 
         running = True
         self.pc = 0
@@ -109,10 +137,9 @@ class CPU:
                 # this should not activate unless PC has landed on invalid instruction
                 self.trace()
                 running = False
-        
-cpu = CPU()        
+
+cpu = CPU()
 
 cpu.run()
-        
-        
-        
+
+
