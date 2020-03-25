@@ -174,6 +174,13 @@ class CPU:
             elif self.ir == POP:
                 self.reg[self.ram_read(self.pc + 1)] = self.stack_pop()
                 self.pc += 2
+
+            elif self.ir == CALL:
+                self.stack_push(self.pc + 2)
+                self.pc = self.reg[self.ram_read(self.pc + 1)]
+
+            elif self.ir == RET:
+                self.pc = self.stack_pop()
                 
 
 
