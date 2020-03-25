@@ -10,10 +10,11 @@ class CPU:
     def __init__(self):
         """Construct a new CPU."""
         self.ram = [0] * 256
-        self.reg = [0] * 7 + [0xF4]
+        self.reg = [0] * 8
         self.pc = 0
         self.ir = 0
         self.fl = 0
+        self.sp = self.reg[7] = 0xF4
 
     def load(self):
         """Load a program into memory."""
@@ -106,6 +107,14 @@ class CPU:
         self.ram[address] = value
         return
 
+    def stack_push(self, register):
+        self.sp -= 1
+        self.ram_write(self.sp, self.reg[register])
+
+    def stack_pop(self, register):
+        self.reg[register] = self.ram_read(self.sp)
+        self.sp += 1
+
     def run(self):
         """Run the CPU."""
         
@@ -153,14 +162,12 @@ class CPU:
                 self.pc += 2
 
             elif self.ir == PUSH:
-                sp -= 1
-                self.ram_write(sp, self.reg[self.ram_read(self.pc + 1)]) 
+                self.stack_push(self.ram_read(self.pc + 1))
                 self.pc += 2
 
             elif self.ir == POP:
-                if sp < 0xF4:
-                    self.reg[self.ram_read(self.pc + 1)] = self.ram_read(sp)
-                    sp += 1
+                if self.sp < 0xF4:
+                    self.stack_pop(self.ram_read(self.pc + 1))
                     self.pc += 2
                 else:
                     running = False
