@@ -10,7 +10,7 @@ class CPU:
     def __init__(self):
         """Construct a new CPU."""
         self.ram = [0] * 256
-        self.reg = [0] * 8
+        self.reg = [0] * 7 + [0xF4]
         self.pc = 0
         self.ir = 0
         self.fl = 0
@@ -112,6 +112,9 @@ class CPU:
         running = True
         self.pc = 0
 
+        sp = self.reg[7]
+        
+
     
         while running:
 
@@ -148,6 +151,23 @@ class CPU:
                 """
                 print(self.reg[self.ram_read(self.pc + 1)])
                 self.pc += 2
+
+            elif self.ir == PUSH:
+                sp -= 1
+                self.ram_write(sp, self.reg[self.ram_read(self.pc + 1)]) 
+                self.pc += 2
+
+            elif self.ir == POP:
+                if sp < 0xF4:
+                    self.reg[self.ram_read(self.pc + 1)] = self.ram_read(sp)
+                    sp += 1
+                    self.pc += 2
+                else:
+                    running = False
+                    print("error: stack pointer at invalid value")
+                    self.trace()
+
+
 
             else:
                 # this should not activate unless PC has landed on invalid instruction
