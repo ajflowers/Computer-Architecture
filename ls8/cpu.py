@@ -113,7 +113,7 @@ class CPU:
 
 
     def stack_pop(self):
-        if self.sp < 0xF4:
+        if self.sp < 0xF3:
             self.sp += 1
             return self.ram_read(self.sp)
         else:
@@ -152,34 +152,32 @@ class CPU:
                 running = False
 
             elif self.ir == LDI:
-                """
-                LDI register immediate
-                Set the value of a register to an integer.
-                """
+                """Set the value of a register to an integer."""
                 self.reg[self.ram_read(self.pc + 1)] = self.ram_read(self.pc + 2)
                 self.pc += 3
 
             elif self.ir == PRN:
-                """
-                PRN register` pseudo-instruction
-                Print numeric value stored in the given register.
-                """
+                """ Print numeric value stored in the given register."""
                 print(self.reg[self.ram_read(self.pc + 1)])
                 self.pc += 2
 
             elif self.ir == PUSH:
+                """Push the value in the given register on the stack."""
                 self.stack_push(self.reg[self.ram_read(self.pc + 1)])
                 self.pc += 2
 
             elif self.ir == POP:
+                """Pop the value at the top of the stack into the given register."""
                 self.reg[self.ram_read(self.pc + 1)] = self.stack_pop()
                 self.pc += 2
 
             elif self.ir == CALL:
+                """Calls a subroutine (function) at the address stored in the register."""
                 self.stack_push(self.pc + 2)
                 self.pc = self.reg[self.ram_read(self.pc + 1)]
 
             elif self.ir == RET:
+                """Return from subroutine."""
                 self.pc = self.stack_pop()
                 
 
