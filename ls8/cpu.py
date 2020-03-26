@@ -14,7 +14,7 @@ class CPU:
         self.pc = 0
         self.ir = 0
         self.fl = 0
-        self.sp = self.reg[7] = 0xF3
+        self.sp = self.reg[7] = 0xF4
 
     def load(self):
         """Load a program into memory."""
@@ -90,18 +90,18 @@ class CPU:
         return
 
     def stack_push(self, value):
-        self.ram_write(self.sp, value)
         self.sp -= 1
-
+        self.ram_write(self.sp, value)        
 
     def stack_pop(self):
-        if self.sp < 0xF3:
+        if self.sp < 0xF4:
             self.sp += 1
-            return self.ram_read(self.sp)
+            return self.ram_read(self.sp - 1)
         else:
             running = False
-            print("error: stack pointer at invalid value")
             self.trace()
+            print("error: stack is empty")
+
 
     def run(self):
         """Run the CPU."""
