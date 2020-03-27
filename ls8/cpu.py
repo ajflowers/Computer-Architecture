@@ -14,6 +14,8 @@ class CPU:
         self.pc = 0
         self.ir = 0
         self.fl = 0
+        self.IM = self.reg[5]
+        self.IS = self.reg[6]
         self.sp = self.reg[7] = 0xF4
 
     def load(self):
@@ -55,8 +57,10 @@ class CPU:
 
         if op == "ADD":
             self.reg[reg_a] += self.reg[reg_b]
+            self.reg[reg_a] = self.reg[reg_a] & 255
         elif op == "MUL":
             self.reg[reg_a] *= self.reg[reg_b]
+            self.reg[reg_a] = self.reg[reg_a] & 255
         elif op == "CMP":
             val_a = self.reg[reg_a] 
             val_b = self.reg[reg_b]
@@ -66,8 +70,27 @@ class CPU:
                 self.fl = 2
             else:
                 self.fl = 1
+        
+        elif op == "AND":
+            self.reg[reg_a] = self.reg[reg_a] & self.reg[reg_b]
+        
+        elif op == "OR":
+            self.reg[reg_a] = self.reg[reg_a] | self.reg[reg_b]   
 
+        elif op == "XOR":
+            self.reg[reg_a] = self.reg[reg_a] ^ self.reg[reg_b]
 
+        elif op == "NOT":
+            self.reg[reg_a] = (~ self.reg[reg_b]) & 255
+
+        elif op == "SHL":
+            self.reg[reg_a] = (self.reg[reg_a] * 2 ** self.reg[reg_b]) & 255
+
+        elif op == "SHR":
+            self.reg[reg_a] = int(self.reg[reg_a] / 2 ** self.reg[reg_b])
+
+        elif op == "MOD":
+            self.reg[reg_a] = self.reg[reg_a] % self.reg[reg_b]
 
         else:
             raise Exception("Unsupported ALU operation")
@@ -124,6 +147,7 @@ class CPU:
         while running:
 
             self.ir = self.ram_read(self.pc)
+            print(self.ir)
 
             if alt_instructions.get(self.ir) is not None:
                 self.alu(
@@ -184,6 +208,19 @@ class CPU:
                     self.pc = self.reg[self.ram_read(self.pc + 1)]
                 else:
                     self.pc += 2
+
+            elif self.ir == ST:
+                reg_a = reg[self.ram_read(self.pc + 1)]
+                reg_b = reg[self.ram_read(self.pc+ 2)]
+
+                self.ram_write(reg_a, reg_b)
+
+            elif self.ir == LD:
+                reg_a = reg[self.ram_read(self.pc + 1)]
+                reg_b = reg[self.ram_read(self.pc+ 2)]
+
+                reg_a = self.ram_read(reg_b)
+
 
             
                 
