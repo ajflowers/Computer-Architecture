@@ -57,6 +57,18 @@ class CPU:
             self.reg[reg_a] += self.reg[reg_b]
         elif op == "MUL":
             self.reg[reg_a] *= self.reg[reg_b]
+        elif op == "CMP":
+            val_a = self.reg[reg_a] 
+            val_b = self.reg[reg_b]
+            if val_a < val_b:
+                self.fl = 4
+            elif val_a > val_b:
+                self.fl = 2
+            else:
+                self.fl = 1
+
+
+
         else:
             raise Exception("Unsupported ALU operation")
 
@@ -66,9 +78,9 @@ class CPU:
         from run() if you need help debugging.
         """
 
-        print(f"TRACE: %02X | %02X %02X %02X |" % (
+        print(f"TRACE: %02X %02X | %02X %02X %02X |" % (
             self.pc,
-            #self.fl,
+            self.fl,
             #self.ie,
             self.ram_read(self.pc),
             self.ram_read(self.pc + 1),
@@ -157,6 +169,23 @@ class CPU:
             elif self.ir == RET:
                 """Return from subroutine."""
                 self.pc = self.stack_pop()
+
+            elif self.ir == JMP:
+                self.pc = self.reg[self.ram_read(self.pc + 1)]
+
+            elif self.ir == JEQ:
+                if self.fl == 1:
+                    self.pc = self.reg[self.ram_read(self.pc + 1)]
+                else:
+                    self.pc += 2
+                
+            elif self.ir == JNE:
+                if self.fl != 1:
+                    self.pc = self.reg[self.ram_read(self.pc + 1)]
+                else:
+                    self.pc += 2
+
+            
                 
             else:
                 # this should not activate unless PC has landed on invalid instruction
