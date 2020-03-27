@@ -52,7 +52,7 @@ class CPU:
             print("File not found")
             sys.exit(2)
 
-    def alu(self, op, reg_a, reg_b):
+    def alu(self, op, reg_a, reg_b=None):
         """ALU operations."""
 
         if op == "ADD":
@@ -81,7 +81,8 @@ class CPU:
             self.reg[reg_a] = self.reg[reg_a] ^ self.reg[reg_b]
 
         elif op == "NOT":
-            self.reg[reg_a] = (~ self.reg[reg_b]) & 255
+            print("not", self.reg[reg_a])
+            self.reg[reg_a] = self.reg[reg_a] ^ 255
 
         elif op == "SHL":
             self.reg[reg_a] = (self.reg[reg_a] * 2 ** self.reg[reg_b]) & 255
@@ -149,17 +150,22 @@ class CPU:
             self.ir = self.ram_read(self.pc)
             # print(self.ir)
 
-            if alt_instructions.get(self.ir) is not None:
+            if alu_1_param.get(self.ir) is not None:
                 self.alu(
-                    alt_instructions[self.ir],
+                    alu_1_param[self.ir],
+                    self.ram_read(self.pc + 1),
+                )
+                self.pc += 2
+
+
+            if alu_2_param.get(self.ir) is not None:
+                self.alu(
+                    alu_2_param[self.ir],
                     self.ram_read(self.pc + 1),
                     self.ram_read(self.pc + 2)
                 )
+                self.pc += 3
 
-                if self.ir == INC or self.ir == DEC:
-                    self.pc += 2
-                else:
-                    self.pc += 3
 
             elif self.ir == HLT:
                 """Halt the CPU (and exit the emulator)."""

@@ -4,13 +4,22 @@
 ; Expected output:
 ; 16
 ; 31
+; 12
+; 224
+
+
 
 LDI R0,19
 LDI R1,28
 AND R0, R1
-PRN R0
+PRN R0      ;print 19 & 28
 LDI R0,19
 LDI R1,28
 OR R0, R1
+PRN R0      ;print 19 | 18
+LDI R1,19
+XOR R1,R0
+PRN R1      ;print 19 ^ 31
+NOT R0
 PRN R0
 HLT

@@ -17,23 +17,25 @@ XOR = 0b10101011
 SHL = 0b10101100
 SHR = 0b10101101
 
-alt_instructions = {
+alu_1_param = {
+    INC: 'INC',
+    DEC: 'DEC',
+    NOT: 'NOT',
+    SHL: 'SHL',
+    SHR: 'SHR'
+}
+
+alu_2_param = {
     ADD: 'ADD',
     SUB: 'SUB',
     MUL: 'MUL',
     DIV: 'DIV',
     MOD: 'MOD',
-    INC: 'INC',
-    DEC: 'DEC',
     CMP: 'CMP',
     AND: 'AND',
-    NOT: 'NOT',
     OR: 'OR',
-    XOR: 'XOR',
-    SHL: 'SHL',
-    SHR: 'SHR'
+    XOR: 'XOR'
 }
-
 ## PC mutators
 
 CALL = 0b01010000
