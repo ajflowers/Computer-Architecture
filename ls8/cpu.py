@@ -147,7 +147,7 @@ class CPU:
         while running:
 
             self.ir = self.ram_read(self.pc)
-            print(self.ir)
+            # print(self.ir)
 
             if alt_instructions.get(self.ir) is not None:
                 self.alu(
