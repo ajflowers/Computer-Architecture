@@ -5,7 +5,7 @@
 ; 16
 ; 31
 ; 12
-; 224
+
 
 
 
@@ -20,6 +20,4 @@ PRN R0      ;print 19 | 18
 LDI R1,19
 XOR R1,R0
 PRN R1      ;print 19 ^ 31
-NOT R0
-PRN R0
 HLT

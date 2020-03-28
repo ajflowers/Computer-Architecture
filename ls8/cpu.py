@@ -81,7 +81,7 @@ class CPU:
             self.reg[reg_a] = self.reg[reg_a] ^ self.reg[reg_b]
 
         elif op == "NOT":
-            print("not", self.reg[reg_a])
+            n = self.reg[reg_a]
             self.reg[reg_a] = self.reg[reg_a] ^ 255
 
         elif op == "SHL":
@@ -157,15 +157,13 @@ class CPU:
                 )
                 self.pc += 2
 
-
-            if alu_2_param.get(self.ir) is not None:
+            elif alu_2_param.get(self.ir) is not None:
                 self.alu(
                     alu_2_param[self.ir],
                     self.ram_read(self.pc + 1),
                     self.ram_read(self.pc + 2)
                 )
                 self.pc += 3
-
 
             elif self.ir == HLT:
                 """Halt the CPU (and exit the emulator)."""
